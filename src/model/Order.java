@@ -12,7 +12,7 @@ import java.util.Random;
 public class Order implements Serializable{
 
 	private static final long serialVersionUID = 1;
-	public static final String SAVE_PATH_FILE_ORDERS = "data/orders.xd";
+	public static final String SAVE_PATH_FILE_ORDERS = "data/orders/products.xd";
 	private String code;
 	private String date;
 	private String clientIdNum;
@@ -34,9 +34,9 @@ public class Order implements Serializable{
 		productsList = new ArrayList<>();
 	}
 
-	public String addProducts(String name, String code, String description, double cost, String restaurantNit, int quantity) {
+	public String addProducts(String code, int quantity) {
 		String info = "";
-		Product p = new Product(name, code, description, cost, restaurantNit, quantity);
+		Product p = new Product(code, quantity);
 		boolean unique = uniqueProductCode(p.getCode());
 		if (unique) {
 			productsList.add(p);
@@ -53,12 +53,18 @@ public class Order implements Serializable{
 		return unique;
 	}
 
+	//	***************************************************************
+
 	//	Serializing
-	public void saveOrder() throws FileNotFoundException, IOException {
-	ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_ORDERS));
 	
+	public void saveOrder() throws FileNotFoundException, IOException {
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_ORDERS));
+		oos.writeObject(productsList);
+		oos.close();
 	}
 
+	
+	
 	//	
 	public void setIdNum(String code) {
 		this.code = code;

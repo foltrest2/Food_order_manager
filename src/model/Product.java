@@ -1,7 +1,13 @@
 package model;
 
-public class Product {
+import java.io.Serializable;
 
+public class Product implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1;
 	private String name;
 	private String code;
 	private String description;
@@ -24,12 +30,8 @@ public class Product {
 		this.restaurantNit = restaurantNit;
 	}
 
-	public Product(String name, String code, String description, double cost, String restaurantNit, int quantity) {
-		this.name = name;
+	public Product(String code, int quantity) {
 		this.code = code;
-		this.description = description;
-		this.cost = cost;
-		this.restaurantNit = restaurantNit;
 		this.quantity = quantity;
 	}
 	

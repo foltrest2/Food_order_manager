@@ -1,16 +1,21 @@
 package model;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.Comparable;
 
-//
-//	Recordar hacer el método para separar lo que hay en el arraylist de products por 
-//	restaurantes.
-//
-//
-//
+public class RestaurantsManager implements Comparable<Client>, Serializable{
 
-public class RestaurantsManager implements Comparable<Client>{
-
+	private static final long serialVersionUID = 1;
+	public final static String SAVE_PATH_FILE_RESTAURANTS = "data/restaurants.xd";
+	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.xd";
+	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.xd";
+	public final static String SAVE_PATH_FILE_ORDERS = "data/orders.xd";
 	public ArrayList<Restaurant> restaurants;
 	public ArrayList<Product> products;
 	public ArrayList<Client> clients;
@@ -28,12 +33,13 @@ public class RestaurantsManager implements Comparable<Client>{
 
 	//Methods of restaurants
 
-	public String addRestaurant(String name, String nit, String manager) {
+	public String addRestaurant(String name, String nit, String manager) throws IOException {
 		String info = "";
 		Restaurant r = new Restaurant(name, nit, manager);
 		boolean unique = uniqueProductCode(r.getNit());
 		if(unique) {
 			restaurants.add(r);
+			saveData("rest");
 			info += "Added!";
 		}
 		else
@@ -213,7 +219,7 @@ public class RestaurantsManager implements Comparable<Client>{
 			info += "Added!";
 		}
 		else
-			info += "** Product alredy exists **";
+			info += "** Order alredy exists ***";
 
 		return info;
 	}
@@ -356,16 +362,102 @@ public class RestaurantsManager implements Comparable<Client>{
 	//	**************************************************************
 
 	//	Update methods of client
-	
+
 	public String updateClientName(String idNum, String name) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).getName().equals(idNum)) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
 				clients.get(i).setName(name);
 				info += "Client's name updated";
 			}
 		}
 		return info;
+	}
+
+	public String updateClientLastName(String idNum, String LastName) {
+		String info = "";
+		for (int i = 0; i < clients.size(); i++) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
+				clients.get(i).setLastName(LastName);
+				info += "Client's last name updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateClientIdNum(String idNum) {
+		String info = "";
+		for (int i = 0; i < clients.size(); i++) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
+				clients.get(i).setIdNum(idNum);
+				info += "Client's ID updated";
+			}
+		}
+		return info;
+	}
+
+
+	//	*********************************************************************
+	//	*********************************************************************
+
+	//	Methods of serialization
+
+	public void saveData(String type) throws IOException{
+		if(type.equalsIgnoreCase("rest")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_RESTAURANTS));
+			oos.writeObject(restaurants);
+			oos.close();
+		} 
+		if(type.equalsIgnoreCase("client")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_CLIENTS));
+			oos.writeObject(clients);
+			oos.close();
+		}
+		if(type.equalsIgnoreCase("products")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_PRODUCTS));
+			oos.writeObject(products);
+			oos.close();
+		}
+		if(type.equalsIgnoreCase("order")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_ORDERS));
+			oos.writeObject(orders);
+			oos.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean loadData(String type) throws IOException, ClassNotFoundException{
+		File r = new File(SAVE_PATH_FILE_RESTAURANTS);
+		File c = new File(SAVE_PATH_FILE_CLIENTS);
+		File p = new File(SAVE_PATH_FILE_PRODUCTS);
+		boolean loaded = false;
+		if(r.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(r));
+			if(type.equalsIgnoreCase("rest")) {
+				restaurants = (ArrayList<Restaurant>)ois.readObject();
+				loaded = true;
+			}
+			ois.close();	
+		}
+		if(c.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(c));
+			if(type.equalsIgnoreCase("client")) {
+				clients = (ArrayList<Client>)ois.readObject();
+				loaded = true;
+			}
+			ois.close();		
+		}
+		if(p.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
+			if(type.equalsIgnoreCase("products")) {
+				products = (ArrayList<Product>)ois.readObject();
+				loaded = true;
+			}
+			ois.close();		
+		} else {
+			loaded = false;
+		}
+		return loaded;
 	}
 
 }

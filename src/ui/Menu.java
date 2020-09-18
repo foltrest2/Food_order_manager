@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import model.RestaurantsManager;
@@ -96,7 +97,7 @@ public class Menu {
 		return info;
 	}
 
-	public void addRestaurant() {
+	public void addRestaurant() throws IOException {
 		System.out.println("Please enter the restaurant name");
 		String name = lector.nextLine();
 		System.out.println("Please enter the restaurant nit");
@@ -108,24 +109,21 @@ public class Menu {
 
 	public void addOrder() {
 		int choose = 0;
-		if(!rm.clients.isEmpty()|| !rm.restaurants.isEmpty()) {
+		if(!rm.clients.isEmpty()&&!rm.restaurants.isEmpty()&&rm.products.isEmpty()) {
 			System.out.println("Generating the order...\n");
 			do {
 				System.out.println("Please type the number (#) of the client who ordered");
 				System.out.println(deployClients());
-				choose = lector.nextInt();
-				lector.nextLine();
+				choose = Integer.parseInt(lector.nextLine());
 			}while(choose<0||choose>rm.restaurants.size());
 			String idNum = rm.clients.get(choose-1).getIdNum();
 			do {
 				System.out.println("Please type the number (#) of the restaurant which nit you want");
 				System.out.println(deployRestaurants());
-				choose = lector.nextInt();
-				lector.nextLine();
+				choose = Integer.parseInt(lector.nextLine());
 			}while(choose<0||choose>rm.restaurants.size());
 			String restaurantNit = rm.restaurants.get(choose-1).getNit();
 			rm.addOrder(idNum, restaurantNit);
-			
 			int choose2 = 0;
 			do {
 				System.out.println("The order is ok, now enter the (#) of the order you need... (Just to confirm)\n");
@@ -135,38 +133,27 @@ public class Menu {
 			System.out.println("Now let's add the products...");
 			boolean finished = true;
 			do {
-				if(!rm.products.isEmpty()) {
-					int choose3 = 0;
-					do {
-						System.out.println("Your restaurant has these products");
-						System.out.println("Please type the number (#) of the product you want to add to the order");
-						System.out.println(rm.restaurants.get(choose-1).showProducts());
-						choose3 = Integer.parseInt(lector.nextLine());
-					}while(choose3<0||choose3>rm.restaurants.get(choose-1).products.size());
-					String name = rm.restaurants.get(choose-1).products.get(choose3-1).getName();
-					String code = rm.restaurants.get(choose-1).products.get(choose3-1).getCode();
-					String description = rm.restaurants.get(choose-1).products.get(choose3-1).getDescription();
-					double cost = rm.restaurants.get(choose-1).products.get(choose3-1).getCost();
-					System.out.println("Please enter the quantity of these product you need");
-					int quantity = Integer.parseInt(lector.nextLine());
-					rm.orders.get(choose2-1).addProducts(name, code, description, cost, restaurantNit, quantity);
-					int decision = 0;
-					System.out.println("Some product more?\n1. Yes\n2. No");
-					decision = lector.nextInt();
-					lector.nextLine();
-					if(decision == 1)
-						finished = false;
-					else if(decision == 2)
-						finished = true;
-				}
-				else {
-					System.out.println("No products in any restaurant yet");
+				int choose3 = 0;
+				do {
+					System.out.println("Your restaurant has these products");
+					System.out.println("Please type the number (#) of the product you want to add to the order");
+					System.out.println(rm.restaurants.get(choose-1).showProducts());
+					choose3 = Integer.parseInt(lector.nextLine());
+				}while(choose3<0||choose3>rm.restaurants.get(choose-1).products.size());
+				String code = rm.restaurants.get(choose-1).products.get(choose3-1).getCode();
+				System.out.println("Please enter the quantity of these product you need");
+				int quantity = Integer.parseInt(lector.nextLine());
+				rm.orders.get(choose2-1).addProducts(code, quantity);
+				System.out.println("Some product more?\n1. Yes\n2. No");
+				int decision = Integer.parseInt(lector.nextLine());
+				if(decision == 1)
+					finished = false;
+				else if(decision == 2)
 					finished = true;
-				}
 			}while(finished == false);
 		}
 		else
-			System.out.println("We have no clients or restaurants registered yet");
+			System.out.println("We have no clients or restaurants or products registered yet");
 	}
 
 	public String deployOrders() {
@@ -181,10 +168,14 @@ public class Menu {
 		return info;
 	}
 
-	private void executeOperation(int option) {
+	private void executeOperation(int option){
 		switch (option) {
 		case 1:
-			addRestaurant();
+			try {
+				addRestaurant();
+			} catch (IOException e) {
+				System.err.println("");
+			}
 			break;
 
 		case 2:
@@ -224,7 +215,6 @@ public class Menu {
 
 	}
 
-
 	private String getMenu() {
 		String menu;
 		menu = "----------------------------\n";
@@ -255,6 +245,7 @@ public class Menu {
 	}
 	public void startMenu() {
 		String menu = getMenu();
+
 		int option;
 		do {
 			System.out.println(menu);
