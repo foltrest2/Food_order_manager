@@ -30,9 +30,10 @@ public class Restaurant implements Serializable{
 	public String showProducts() {
 		String info = "";
 		if (products.isEmpty()) {
-			info = "There no products in list\n";
+			info = "\nThere no products in list\n";
 		}
 		else {
+			info += name + " has these products: \n";
 			for (int i = 0; i < products.size(); i++) {
 				info += products.get(i).getInfo()+"This is the product #" + (i+1) + "\n";
 			}	
@@ -76,9 +77,18 @@ public class Restaurant implements Serializable{
 		this.manager = manager;
 	}
 
+	public ArrayList<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(ArrayList<Product> products) {
+		this.products = products;
+	}
+
 	public String getInfo() {
 		String info = "";
 		info += "Name: " + name + "\nRestaurant nit: " + nit + "\nManager: " + manager + "\n";
+		info += showProducts();
 		return info;
 	}
 

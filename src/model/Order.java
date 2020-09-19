@@ -1,10 +1,12 @@
 package model;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,7 +14,7 @@ import java.util.Random;
 public class Order implements Serializable{
 
 	private static final long serialVersionUID = 1;
-	public static final String SAVE_PATH_FILE_ORDERS = "data/orders/products.xd";
+	public final static String SAVE_PATH_FILE_PRODUCTS_OF_ORDERS = "data/productsOrders.xd";	
 	private String code;
 	private String date;
 	private String clientIdNum;
@@ -23,11 +25,11 @@ public class Order implements Serializable{
 	public ArrayList<Product> productsList;
 	/**
 	 * 
-	 * @param code
+	 * @param code 
 	 * @param date
 	 */
-	public Order(String clientIdNum, String restaurantNit) {
-		this.code = new BigInteger(50,random).toString(32);
+	public Order(String code, String clientIdNum, String restaurantNit) {
+		this.code = code;
 		this.date = ""+(LocalDate.now().getDayOfMonth())+LocalDate.now().getMonthValue()+LocalDate.now().getYear();
 		this.clientIdNum = clientIdNum;
 		this.restaurantNit = restaurantNit;
@@ -57,15 +59,25 @@ public class Order implements Serializable{
 
 	//	Serializing
 	
-	public void saveOrder() throws FileNotFoundException, IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_ORDERS));
+	public void saveOrderProducts() throws FileNotFoundException, IOException {
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_PRODUCTS_OF_ORDERS));
 		oos.writeObject(productsList);
 		oos.close();
 	}
-
 	
+	@SuppressWarnings("unchecked")
+	public String loadData() throws IOException, ClassNotFoundException{
+		String info = "";
+		File po = new File(SAVE_PATH_FILE_PRODUCTS_OF_ORDERS);
+		if(po.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(po));
+			productsList = (ArrayList<Product>)ois.readObject();
+			info += "Products of the order loaded succesfully\n";
+			ois.close();	
+		}
+		return info;
+	}
 	
-	//	
 	public void setIdNum(String code) {
 		this.code = code;
 	}
@@ -82,6 +94,15 @@ public class Order implements Serializable{
 	public String getRestaurantNit() {
 		return restaurantNit;
 	}
+	
+	public void setClientIdNum(String clientIdNum) {
+		this.clientIdNum = clientIdNum;
+	}
+
+	public void setRestaurantNit(String restaurantNit) {
+		this.restaurantNit = restaurantNit;
+	}
+
 	public String getInfo() {
 		String info = "";
 		info += "Code: " + code + "\nDate: " + date + "\nClient ID: " + clientIdNum + "\nRestaurant nit: " + restaurantNit + "\n";

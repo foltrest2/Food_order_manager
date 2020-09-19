@@ -1,6 +1,8 @@
 package ui;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Random;
 import java.util.Scanner;
 
 import model.RestaurantsManager;
@@ -33,7 +35,12 @@ public class Menu {
 		String tel = lector.nextLine();
 		System.out.println("Please enter the client adress: ");
 		String adress = lector.nextLine();
-		System.out.println(rm.addClient(name, lastName, idNum, choice,tel,adress));
+		try {
+			System.out.println(rm.addClient(name, lastName, idNum, choice,tel,adress));
+			System.out.println("Client saved!");
+		} catch (IOException e) {
+			System.err.println("The data can't be saved");
+		}
 	}
 
 	public String deployClients() {
@@ -57,17 +64,20 @@ public class Menu {
 			System.out.println("Please enter the description of the product");
 			String description = lector.nextLine();
 			System.out.println("Please enter the cost of the product");
-			double cost = lector.nextDouble();
-			lector.nextLine();
+			double cost = Double.parseDouble(lector.nextLine());
 			int choose = 0;
 			do {
 				System.out.println("Please type the number (#) of the restaurant which nit you want");
 				System.out.println(deployRestaurants());
-				choose = lector.nextInt();
-				lector.nextLine();
+				choose = Integer.parseInt(lector.nextLine());
 			}while(choose<0||choose>rm.restaurants.size());
 			String restaurantNit = rm.restaurants.get(choose-1).getNit();
-			rm.addProduct(name, code, description, cost, restaurantNit);
+			try {
+				System.out.println(rm.addProduct(name, code, description, cost, restaurantNit));
+				System.out.println("Product saved!");
+			} catch (IOException e) {
+				System.err.println("Product can't be saved");
+			}
 		}
 		else
 			System.out.println("The product can't be created because the program doesn't have restaurants yet");
@@ -89,7 +99,7 @@ public class Menu {
 		String info = "";
 		if (!rm.restaurants.isEmpty()) {
 			for (int i = 0; i < rm.restaurants.size(); i++) {
-				info += "\n" + rm.restaurants.get(i).getInfo() + "This is the restaurant #" + (i+1) + "\n";
+				info += "\n" + rm.restaurants.get(i).getInfo() + "\nThis is the restaurant #" + (i+1) + "\n";
 			}
 		}
 		else
@@ -97,20 +107,27 @@ public class Menu {
 		return info;
 	}
 
-	public void addRestaurant() throws IOException {
+	public void addRestaurant() {
 		System.out.println("Please enter the restaurant name");
 		String name = lector.nextLine();
 		System.out.println("Please enter the restaurant nit");
 		String nit = lector.nextLine();
 		System.out.println("Please enter the restaurant manager name");
 		String manager = lector.nextLine();
-		rm.addRestaurant(name, nit, manager);
+		try {
+			System.out.println(rm.addRestaurant(name, nit, manager));
+			System.out.println("Restaurant saved");
+		} catch (IOException e) {
+			System.err.println("Restaurant can't be saved");
+		}
 	}
 
 	public void addOrder() {
 		int choose = 0;
-		if(!rm.clients.isEmpty()&&!rm.restaurants.isEmpty()&&rm.products.isEmpty()) {
+		if(!rm.clients.isEmpty()&&!rm.restaurants.isEmpty()&&!rm.products.isEmpty()) {
 			System.out.println("Generating the order...\n");
+			Random random = new Random();
+			String code = new BigInteger(50,random).toString(32);
 			do {
 				System.out.println("Please type the number (#) of the client who ordered");
 				System.out.println(deployClients());
@@ -123,27 +140,27 @@ public class Menu {
 				choose = Integer.parseInt(lector.nextLine());
 			}while(choose<0||choose>rm.restaurants.size());
 			String restaurantNit = rm.restaurants.get(choose-1).getNit();
-			rm.addOrder(idNum, restaurantNit);
-			int choose2 = 0;
-			do {
-				System.out.println("The order is ok, now enter the (#) of the order you need... (Just to confirm)\n");
-				System.out.println(deployOrders());
-				choose2 = Integer.parseInt(lector.nextLine());
-			}while(choose2<0||choose2>rm.orders.size());
+			try {
+				System.out.println(rm.addOrder(code, idNum, restaurantNit));
+				System.out.println("Order saved!");
+			} catch (IOException e) {
+				System.err.println("Order can't be saved");
+			}
+			int position = rm.positionWithOrderCode(code);
 			System.out.println("Now let's add the products...");
 			boolean finished = true;
 			do {
-				int choose3 = 0;
+				int choose2 = 0;
 				do {
 					System.out.println("Your restaurant has these products");
 					System.out.println("Please type the number (#) of the product you want to add to the order");
 					System.out.println(rm.restaurants.get(choose-1).showProducts());
-					choose3 = Integer.parseInt(lector.nextLine());
-				}while(choose3<0||choose3>rm.restaurants.get(choose-1).products.size());
-				String code = rm.restaurants.get(choose-1).products.get(choose3-1).getCode();
+					choose2 = Integer.parseInt(lector.nextLine());
+				}while(choose2<0||choose2>rm.restaurants.get(choose-1).products.size());
+				String code2 = rm.restaurants.get(choose-1).products.get(choose2-1).getCode();
 				System.out.println("Please enter the quantity of these product you need");
 				int quantity = Integer.parseInt(lector.nextLine());
-				rm.orders.get(choose2-1).addProducts(code, quantity);
+				rm.orders.get(position).addProducts(code2, quantity);
 				System.out.println("Some product more?\n1. Yes\n2. No");
 				int decision = Integer.parseInt(lector.nextLine());
 				if(decision == 1)
@@ -155,6 +172,7 @@ public class Menu {
 		else
 			System.out.println("We have no clients or restaurants or products registered yet");
 	}
+
 
 	public String deployOrders() {
 		String info = "";
@@ -168,14 +186,30 @@ public class Menu {
 		return info;
 	}
 
+	public void loadData() {
+		try {
+			System.out.println("\n" + rm.loadData() + "\n");
+		} catch (ClassNotFoundException e) {
+			System.err.println("Something going wrong");
+		} catch (IOException e) {
+			System.err.println("Data can't be loaded");
+		}
+		
+		for (int i = 0; i < rm.orders.size(); i++) {
+			try {
+				System.out.println(rm.orders.get(i).loadData());
+			} catch (ClassNotFoundException e) {
+				System.err.println("Something going wrong");
+			} catch (IOException e) {
+				System.err.println("Data can't be loaded");
+			}
+		}
+	}
+
 	private void executeOperation(int option){
 		switch (option) {
 		case 1:
-			try {
-				addRestaurant();
-			} catch (IOException e) {
-				System.err.println("");
-			}
+			addRestaurant();
 			break;
 
 		case 2:
@@ -245,7 +279,7 @@ public class Menu {
 	}
 	public void startMenu() {
 		String menu = getMenu();
-
+		loadData();
 		int option;
 		do {
 			System.out.println(menu);

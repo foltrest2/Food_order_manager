@@ -13,6 +13,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 	private static final long serialVersionUID = 1;
 	public final static String SAVE_PATH_FILE_RESTAURANTS = "data/restaurants.xd";
+	public final static String SAVE_PATH_FILE_PRODUCTS_OF_RESTAURANTS = "data/restaurantsProducts.xd";
 	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.xd";
 	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.xd";
 	public final static String SAVE_PATH_FILE_ORDERS = "data/orders.xd";
@@ -36,25 +37,35 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	public String addRestaurant(String name, String nit, String manager) throws IOException {
 		String info = "";
 		Restaurant r = new Restaurant(name, nit, manager);
-		boolean unique = uniqueProductCode(r.getNit());
-		if(unique) {
+		boolean done = false;
+
+		if(restaurants.isEmpty()) {
 			restaurants.add(r);
 			saveData("rest");
 			info += "Added!";
+			done = true;
 		}
-		else
-			info += "** Restaurant alredy exists **";
-
+		else if(!done) {
+			boolean unique = uniqueRestaurantNit(r.getNit());
+			if(unique) {
+				restaurants.add(r);
+				saveData("rest");
+				info += "Added!";
+			}
+			else
+				info += "** Restaurant alredy exists **";
+		}
 		return info;
 	}
 
-	public boolean uniqueRestaurantCode(String nit){
+	public boolean uniqueRestaurantNit(String nit){
 		boolean unique = true;
 		for(int i=0; i<restaurants.size() && unique; i++){
 			if(restaurants.get(i).getNit().equalsIgnoreCase(nit)){
 				unique = false;
 			}
 		}
+
 		return unique;
 	}
 
@@ -71,12 +82,13 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return info;
 	}
 
-	public String addProductToRestaurant(Product p) {
+	public String addProductToRestaurant(Product p) throws IOException {
 		String info = "";
 		if (!restaurants.isEmpty()) {
 			for (int i = 0; i < restaurants.size(); i++) {
 				if(p.getRestaurantNit().equals(restaurants.get(i).getNit())) {
 					restaurants.get(i).products.add(p);
+					saveData("restProd");
 					info += "Product added to the restaurant list";
 				}
 			}
@@ -89,7 +101,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 	//Methods of clients
 
-	public String addClient(String name, String lastName, String idNum, int choice, String telephone, String adress) {
+	public String addClient(String name, String lastName, String idNum, int choice, String telephone, String adress) throws IOException {
 		String info = "";
 		String idType = "";
 		switch (choice) {
@@ -104,9 +116,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			break;
 		}
 		Client c = new Client(name, lastName, idNum, idType, telephone, adress);
-		boolean unique = uniqueProductCode(c.getIdNum());
+		boolean unique = uniqueClientId(c.getIdNum());
 		if(clients.isEmpty()) {
 			clients.add(c);
+			saveData("client");
+			info += "Added!";
 		}else if(!unique) {
 			info += "The client already exists";
 		}
@@ -120,6 +134,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 				clients.get(j).getName().compareTo(clients.get(j+1).getName());
 			}
 			clients.add(compareTo(c),c);
+			saveData("client");
 		}
 		return info;
 	}
@@ -169,7 +184,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 	//Methods of products
 
-	public String addProduct(String name, String code, String description, double cost, String restaurantNit) {
+	public String addProduct(String name, String code, String description, double cost, String restaurantNit) throws IOException {
 		String info = "";
 		Product p = new Product(name, code, description, cost, restaurantNit);
 		boolean unique = uniqueProductCode(p.getCode());
@@ -177,6 +192,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			products.add(p);
 			info += "Added!\n";
 			info += addProductToRestaurant(p)+"\n";
+			saveData("products");
 		}
 		else
 			info += "** Product alredy exists **";
@@ -210,13 +226,14 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 	//Methods of orders
 
-	public String addOrder(String clientIdNum, String restaurantNit) {
+	public String addOrder(String code, String clientIdNum, String restaurantNit) throws IOException {
 		String info = "";
-		Order o = new Order(clientIdNum, restaurantNit);
+		Order o = new Order(code, clientIdNum, restaurantNit);
 		boolean unique = uniqueOrderCode(o.getCode());
 		if(unique) {
 			orders.add(o);
 			info += "Added!";
+			saveData("order");
 		}
 		else
 			info += "** Order alredy exists ***";
@@ -232,6 +249,16 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			}
 		}
 		return unique;
+	}
+	
+	public int positionWithOrderCode(String code){
+		int position = 0;
+		for(int i=0; i<orders.size(); i++){
+			if(orders.get(i).getCode().equalsIgnoreCase(code)){
+				position = i;
+			}
+		}
+		return position;
 	}
 
 
@@ -249,6 +276,15 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			}	
 		}
 		return info;
+	}
+	
+	public int searchOrder(String clientIdNum, String restaurantNit) {
+		int position = 0;
+		for (int i = 0; i < orders.size(); i++) {
+			if(orders.get(i).getClientIdNum().equals(clientIdNum)&&orders.get(i).getRestaurantNit().equals(restaurantNit))
+				position = i;
+		}
+		return position;
 	}
 
 	//	**************************************************************
@@ -273,6 +309,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 				restaurants.get(i).setNit(nit);
 				info += "Nit updated";
 				info += updateProductRestaurantNit(nit);
+				info += updateOrderRestaurantNit(nit);
 			}
 		}
 		return info;
@@ -391,13 +428,93 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			if (clients.get(i).getIdNum().equals(idNum)) {
 				clients.get(i).setIdNum(idNum);
 				info += "Client's ID updated";
+				info += updateOrderClientIdNum(idNum);
 			}
 		}
 		return info;
 	}
 
+	public String updateClientIdType(String idNum, String idType) {
+		String info = "";
+		for (int i = 0; i < clients.size(); i++) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
+				clients.get(i).setIdType(idType);
+				info += "Client's ID type updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateClientTelephone(String idNum, String telephone) {
+		String info = "";
+		for (int i = 0; i < clients.size(); i++) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
+				clients.get(i).setTelephone(telephone);
+				info += "Client's telephone updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateClientAddress(String idNum, String address) {
+		String info = "";
+		for (int i = 0; i < clients.size(); i++) {
+			if (clients.get(i).getIdNum().equals(idNum)) {
+				clients.get(i).setAddress(address);
+				info += "Client's ID updated";
+			}
+		}
+		return info;
+	}
 
 	//	*********************************************************************
+
+	//	Update methods of order
+
+	public String updateOrderClientIdNum(String code, String clientIdNum) {
+		String info = "";
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getCode().equals(code)) {
+				orders.get(i).setClientIdNum(clientIdNum);
+				info += "Order's client ID num updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateOrderClientIdNum(String clientIdNum) {
+		String info = "";
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getClientIdNum().equals(clientIdNum)) {
+				orders.get(i).setClientIdNum(clientIdNum);
+				info += "Order's client ID num updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateOrderRestaurantNit(String code, String restaurantNit) {
+		String info = "";
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getCode().equals(code)) {
+				orders.get(i).setRestaurantNit(restaurantNit);
+				info += "Order's restaurant nit updated";
+			}
+		}
+		return info;
+	}
+
+	public String updateOrderRestaurantNit(String restaurantNit) {
+		String info = "";
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getRestaurantNit().equals(restaurantNit)) {
+				orders.get(i).setRestaurantNit(restaurantNit);
+				info += "Order's restaurant nit updated";
+			}
+		}
+		return info;
+	}
+
 	//	*********************************************************************
 
 	//	Methods of serialization
@@ -408,6 +525,13 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			oos.writeObject(restaurants);
 			oos.close();
 		} 
+		if(type.equalsIgnoreCase("restProd")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_PRODUCTS_OF_RESTAURANTS));
+			for (int i = 0; i < restaurants.size(); i++) {
+				oos.writeObject(restaurants.get(i).getProducts());
+			}
+			oos.close();
+		}
 		if(type.equalsIgnoreCase("client")) {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_CLIENTS));
 			oos.writeObject(clients);
@@ -426,38 +550,57 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	}
 
 	@SuppressWarnings("unchecked")
-	public boolean loadData(String type) throws IOException, ClassNotFoundException{
+	public String loadData() throws IOException, ClassNotFoundException{
 		File r = new File(SAVE_PATH_FILE_RESTAURANTS);
 		File c = new File(SAVE_PATH_FILE_CLIENTS);
 		File p = new File(SAVE_PATH_FILE_PRODUCTS);
+		File o = new File(SAVE_PATH_FILE_ORDERS);
+		File rp = new File(SAVE_PATH_FILE_PRODUCTS_OF_RESTAURANTS);
+		String info = "";
 		boolean loaded = false;
 		if(r.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(r));
-			if(type.equalsIgnoreCase("rest")) {
-				restaurants = (ArrayList<Restaurant>)ois.readObject();
-				loaded = true;
-			}
+			restaurants = (ArrayList<Restaurant>)ois.readObject();
+			info += "Restaurants loaded succesfully\n";
 			ois.close();	
+			loaded = true;
 		}
 		if(c.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(c));
-			if(type.equalsIgnoreCase("client")) {
-				clients = (ArrayList<Client>)ois.readObject();
-				loaded = true;
-			}
-			ois.close();		
+			clients = (ArrayList<Client>)ois.readObject();
+			info += "Clients loaded succesfully\n";
+			ois.close();
+			loaded = true;
 		}
 		if(p.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
-			if(type.equalsIgnoreCase("products")) {
-				products = (ArrayList<Product>)ois.readObject();
-				loaded = true;
-			}
-			ois.close();		
-		} else {
-			loaded = false;
+			products = (ArrayList<Product>)ois.readObject();
+			info += "Products loaded succesfully\n";
+			ois.close();
+			loaded = true;
+		} 
+		if(o.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(o));
+			orders = (ArrayList<Order>)ois.readObject();
+			info += "Orders loaded succesfully\n";
+			ois.close();
+			loaded = true;
 		}
-		return loaded;
+		if(rp.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(rp));
+			for (int i = 0; i < restaurants.size(); i++) {
+				@SuppressWarnings("unused")
+				ArrayList<Product> products = restaurants.get(i).getProducts(); 
+				products = (ArrayList<Product>)ois.readObject();
+			}
+			info += "Restaurant products loaded succesfully\n";
+			ois.close();
+			loaded = true;
+		}
+		if(loaded == false) {
+			info = "Nothing to load";
+		}
+		return info;
 	}
 
 }

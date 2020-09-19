@@ -78,7 +78,7 @@ public class Client implements Serializable{
 		this.telephone = telephone;
 	}
 
-	public String getAdress() {
+	public String getAddress() {
 		return address;
 	}
 
@@ -86,8 +86,8 @@ public class Client implements Serializable{
 	 * 
 	 * @param adress
 	 */
-	public void setAdress(String adress) {
-		this.address = adress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class Client implements Serializable{
 
 	public String getInfo() {
 		String info = "";
-		info += "Name: " + name + "\nIdType: " + idType + "\nidNum: " + idNum + "\nTelephone: " + telephone + "\nAdress: " + address + "\n";
+		info += "Name: " + name + "\nLast name: " + lastName + "\nIdType: " + idType + "\nidNum: " + idNum + "\nTelephone: " + telephone + "\nAdress: " + address + "\n";
 		return info;
 	}
 
