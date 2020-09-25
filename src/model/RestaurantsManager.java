@@ -248,7 +248,6 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			orders.add(o);
 			info += "Added!";
 		}
-		else
 			info += "** Order alredy exists ***";
 
 		return info;
