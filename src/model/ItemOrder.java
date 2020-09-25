@@ -10,6 +10,14 @@ public class ItemOrder implements Serializable{
 	private Product product;
 	private Order order;
 
+	/**
+	 * This method create a object of ItemOrder
+	 * @param p Is the product
+	 * @param o Is the order
+	 * 
+	 * <br>Precondition:</br> Product and order are not null
+	 * <br>Postcondition:</br> ItemOrder created
+	 */
 	public ItemOrder(Product p, Order o) {
 		product = p;
 		order = o;
