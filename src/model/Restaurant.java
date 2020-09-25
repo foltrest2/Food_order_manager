@@ -24,17 +24,18 @@ public class Restaurant implements Serializable{
 		this.name = name;
 		this.nit = nit;
 		this.manager = manager;
-		products = new ArrayList<>();
+		products = new ArrayList<Product>();
 	}
 
 	public String showProducts() {
 		String info = "";
 		if (products.isEmpty()) {
-			info = "There no products in list\n";
+			info = "\nThere no products in list\n";
 		}
 		else {
+			info += "\n" + name + " has these products: \n";
 			for (int i = 0; i < products.size(); i++) {
-				info += products.get(i).getInfo()+"This is the product #" + (i+1) + "\n";
+				info += "\n" + products.get(i).getInfo()+"This is the product #" + (i+1) + "\n";
 			}	
 		}
 		return info;
@@ -76,7 +77,22 @@ public class Restaurant implements Serializable{
 		this.manager = manager;
 	}
 
-	public String getInfo() {
+	public ArrayList<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(ArrayList<Product> products) {
+		this.products = products;
+	}
+
+	public String getInfoWithProducts() {
+		String info = "";
+		info += "Name: " + name + "\nRestaurant nit: " + nit + "\nManager: " + manager + "\n";
+		info += showProducts();
+		return info;
+	}
+	
+	public String getInfoWithoutProducts() {
 		String info = "";
 		info += "Name: " + name + "\nRestaurant nit: " + nit + "\nManager: " + manager + "\n";
 		return info;

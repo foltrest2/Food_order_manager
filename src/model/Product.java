@@ -113,7 +113,13 @@ public class Product implements Serializable{
 	
 	public String getInfoWithQuantity() {
 		String info = "";
-		info += "Name: " + name + "\nCode: " + code + "\nDescription: " + description + "\nCost: " + cost + "\nRestaurant nit: " + restaurantNit + "\nQuantity: " + quantity ;
+		info += "Code: " + code + "\nQuantity: " + quantity + "\n";
+		return info;
+	}
+	
+	public String getInfoWithQuantityToExport(String separator) {
+		String info = "";
+		info += code + separator + quantity;
 		return info;
 	}
 
