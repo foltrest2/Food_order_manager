@@ -7,21 +7,22 @@ import org.junit.jupiter.api.Test;
 
 class RestaurantTest {
 
-	private RestaurantsManager restaurantsManager = new RestaurantsManager();
-
+	private RestaurantsManager rm;
+	
 	public void setupScenary1() throws IOException {
-		restaurantsManager.addRestaurant("Las delicias de Gallo", "12345", "Gallo");
-		restaurantsManager.addRestaurant("Las delicias de Colombia", "12345", "Camilo");
+		rm = new RestaurantsManager();
+		rm.addRestaurant("Las delicias de Gallo", "12345", "Gallo");
+		rm.addRestaurant("Las delicias de Colombia", "12345", "Camilo");
 	}
 	
 	@Test
 	public void testSameRestaurantsNit_1() throws IOException {
 		setupScenary1();
-		assertEquals("Fail test restaurants duplicate", 1, restaurantsManager.getRestaurants().size());
+		assertEquals("There's some restaurant duplicate", 1, rm.restaurants.size());
 	}
 	@Test
 	public void testSameRestaurantsNit_2() throws IOException {
 		setupScenary1();
-		assertEquals("Fail test restaurants duplicate", "Las delicias de Gallo", restaurantsManager.getRestaurants().get(0).getName());
+		assertEquals("There's some restaurant duplicate", "Las delicias de Gallo", rm.restaurants.get(0).getName());
 	}
 }

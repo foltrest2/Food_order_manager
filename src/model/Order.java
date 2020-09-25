@@ -141,15 +141,4 @@ public class Order implements Serializable{
 		return info;
 	}
 	
-//	public String getProductsToExport() {
-//		String info = "";
-//		if(!productsList.isEmpty()) {
-//			for (int i = 0; i < productsList.size(); i++) {
-//				info += productsList.get(i).getInfoWithQuantityToExport();
-//			}
-//		}
-//		else
-//			info += "No products in this order";
-//		return info;
-//	}
 }
