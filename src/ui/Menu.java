@@ -16,12 +16,14 @@ import model.RestaurantsManager;
 public class Menu {
 	private Scanner lector;
 	private RestaurantsManager rm = new RestaurantsManager();
-	final static int EXIT_MENU = 14;
+	final static int EXIT_MENU = 15;
 
 	public Menu() {
 		lector = new Scanner(System.in);
 	}
-
+	/**
+	 * This method gets the info to create a client
+	 */
 	public void addClient() {
 		int choice;
 		System.out.println("Adding client...\n");
@@ -46,6 +48,10 @@ public class Menu {
 			System.err.println("The data can't be saved");
 		}
 	}
+	/**
+	 * This method deploy clients and their position 
+	 * @return the info to show
+	 */
 	public String deployClients() {
 		String info = "";
 		if (!rm.clients.isEmpty()) {
@@ -59,6 +65,9 @@ public class Menu {
 			info += "No clients registered yet";
 		return info;
 	}
+	/**
+	 * This method gets the info to create a product
+	 */
 	public void addProduct() {
 		if (!rm.restaurants.isEmpty()) {
 			System.out.println("Please enter the product name");
@@ -86,6 +95,10 @@ public class Menu {
 		else
 			System.out.println("The product can't be created because the program doesn't have restaurants yet");
 	}
+	/**
+	 * This method deploy products and their position 
+	 * @return the info to show
+	 */
 	public String deployProducts() {
 		String info = "";
 		if (!rm.products.isEmpty()) {
@@ -99,6 +112,10 @@ public class Menu {
 			info += "No products registered yet";
 		return info;
 	}
+	/**
+	 * This method deploy restaurants and their products with the position of both 
+	 * @return the info to show
+	 */
 	public String deployRestaurantsWithProducts() {
 		String info = "";
 		if (!rm.restaurants.isEmpty()) {
@@ -112,6 +129,10 @@ public class Menu {
 			info += "No restaurants registered yet";
 		return info;
 	}
+	/**
+	 * This method deploy restaurants and their position 
+	 * @return the info to show
+	 */
 	public String deployRestaurantsWithoutProducts() {
 		String info = "";
 		if (!rm.restaurants.isEmpty()) {
@@ -125,6 +146,9 @@ public class Menu {
 			info += "No restaurants registered yet";
 		return info;
 	}
+	/**
+	 * This method gets the info to create a restaurant
+	 */
 	public void addRestaurant() {
 		System.out.println("Please enter the restaurant name");
 		String name = lector.nextLine();
@@ -139,6 +163,9 @@ public class Menu {
 			System.err.println("Restaurant can't be saved");
 		}
 	}
+	/**
+	 * This method gets the info to create a order
+	 */
 	public void addOrder() {
 		int choose = 0;
 		if(!rm.clients.isEmpty()&&!rm.restaurants.isEmpty()&&!rm.products.isEmpty()) {
@@ -190,6 +217,10 @@ public class Menu {
 		else
 			System.out.println("We have no clients or restaurants or products registered yet");
 	}
+	/**
+	 * This method deploy orders with their products and the position of both 
+	 * @return the info to show
+	 */
 	public String deployOrders() {
 		String info = "";
 		if (!rm.orders.isEmpty()) {
@@ -208,6 +239,9 @@ public class Menu {
 			info += "No orders registered yet";
 		return info;
 	}
+	/**
+	 * This method load the data and catch the exception
+	 */
 	public void loadData() {
 		try {
 			System.out.println("\n" + rm.loadData() + "\n");
@@ -219,6 +253,14 @@ public class Menu {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * This method call the methods to search the position of the object requested
+	 * @param selection is the object requested
+	 * @return the position of the object requested
+	 * @throws InvalidNitException when the nit doesn't exists
+	 * @throws InvalidCodeException when the code doesn't exists
+	 * @throws InvalidIdNumException when the ID number doesn't exists
+	 */
 	public int whichOne(int selection) throws InvalidNitException, InvalidCodeException, InvalidIdNumException {
 		int position = 0;
 		switch (selection) {
@@ -251,6 +293,10 @@ public class Menu {
 		}
 		return position;
 	}
+	/**
+	 * This method direct and call the methods to update all the attributes of restaurant
+	 * @param position is the position of the restaurant
+	 */
 	public void updateRestaurant(int position) {
 		System.out.println("Please select what do you want to change\n");
 		System.out.println("1. Name\n2. Nit\n3. Manager");
@@ -281,11 +327,10 @@ public class Menu {
 			System.err.println("The updating can't be saved");
 		}
 	}
-
-	//	
-	//	REVISAR EL ACTUALIZAR CÓDIGO DEL PRODUCTO
-	//	
-
+	/**
+	 * This method direct and call the methods to update all the attributes of product
+	 * @param position is the position of the product
+	 */
 	public void updateProduct(int position) {
 		System.out.println("Please select what do you want to change\n*The restaurant nit only change if you update it directly in the restaurant option*\n");
 		System.out.println("1. Name\n2. Code\n3. Description\n4. Cost\n");
@@ -323,6 +368,10 @@ public class Menu {
 		}
 
 	}
+	/**
+	 * This method direct and call the methods to update all the attributes of client
+	 * @param position is the position of the client
+	 */
 	public void updateClient(int position) {
 		System.out.println("Please select what do you want to change\n");
 		System.out.println("1. Name\n2. Last name\n3. ID\n4. ID type\n5. Telephone\n6. Address\n");
@@ -368,6 +417,11 @@ public class Menu {
 			System.err.println("The updating can't be saved");
 		}
 	}
+	/**
+	 * This method call the method to show products in order and able to choose one
+	 * @param position of the order
+	 * @return position of the product
+	 */
 	public int whichProduct(int position) {
 		int productPosition = 0;
 		do {
@@ -377,6 +431,10 @@ public class Menu {
 		}while(productPosition<0||productPosition>rm.orders.get(position).productsList.size());
 		return productPosition-1;
 	}
+	/**
+	 * This method direct and call the methods to update some attributes of order
+	 * @param position is the position of the order
+	 */
 	public void updateOrder(int position) {
 		System.out.println("Please select what do you want to change\n");
 		System.out.println("1. Product's quantity\n2. Delete\n3. Update status");
@@ -406,6 +464,12 @@ public class Menu {
 		}
 
 	}
+	/**
+	 * This method direct the petition to their respective method 
+	 * @throws InvalidNitException when the nit doesn't exists
+	 * @throws InvalidCodeException when the code doesn't exists
+	 * @throws InvalidIdNumException when the ID number doesn't exists
+	 */
 	public void updateAll() throws InvalidNitException, InvalidCodeException, InvalidIdNumException {
 		System.out.println("Please select what do you want to update\n");
 		System.out.println("1. Restaurants\n2. Products\n3. Clients\n4. Orders\n");
@@ -432,6 +496,9 @@ public class Menu {
 			break;
 		}
 	}
+	/**
+	 * This method get's the route of the file to import and directs to the method of import data
+	 */
 	public void importData() {
 		System.out.println("Please, entry the route of the file\n");
 		String fileName = lector.nextLine();
@@ -445,13 +512,44 @@ public class Menu {
 			System.err.println(e.getMessage());
 		}
 	}
+	/**
+	 * This method call the method to sort the arrayList of restaurants by name
+	 */
 	public void sortRestaurantsByName() {
 		rm.sortRestaurantsByName();
 		System.out.println(deployRestaurantsWithoutProducts());
 	}
+	/**
+	 * This method call the method to sort the arrayList of clients by telephone
+	 */
 	public void sortClientsByTelephone() {
 		System.out.println(rm.sortClientsByTelephone());
 	}
+	/**
+	 * This method request a client name and last name, then call a method in Restaurants Manager to execute the binary search, finally show the searching time.
+	 */
+	private void searchClientByName() {
+		System.out.println("Enter the first name of client ");
+		String name = lector.nextLine();
+		System.out.println("Enter the last name of client ");
+		String lastName = lector.nextLine();
+		boolean found;
+		long start = System.currentTimeMillis();
+		found = rm.searchClientName(name, lastName);
+		long end = System.currentTimeMillis();
+		if(found) {
+			System.out.println("Client :"+name+" "+lastName+" was found!");
+		} else {
+			System.out.println("Client :"+name+" "+lastName+" was not found!");
+		}
+		System.out.println("Start: "+start);
+		System.out.println("End: "+end);
+		System.out.println("Searching time was: "+(end-start));
+	}
+	/**
+	 * This method directs the petition to the respective method
+	 * @param option is the petition
+	 */
 	private void executeOperation(int option){
 		switch (option) {
 		case 1:
@@ -503,10 +601,14 @@ public class Menu {
 			break;
 
 		case 12:
+			searchClientByName();
+			break;
+			
+		case 13:
 			importData();
 			break;
 
-		case 13:
+		case 14:
 			try {
 				rm.exportOrder(";");
 				System.out.println("Export succesfully");
@@ -515,7 +617,7 @@ public class Menu {
 			}
 			break;
 
-		case 14:
+		case 15:
 			exitProgram();
 			break;
 		default:
@@ -523,6 +625,10 @@ public class Menu {
 		}
 
 	}
+	/**
+	 * This method show the menu
+	 * @return the menu
+	 */
 	private String getMenu() {
 		String menu;
 		menu = "----------------------------\n";
@@ -541,21 +647,32 @@ public class Menu {
 		menu += "9. Update information\n";
 		menu += "10. Show restaurants sorted by name\n";
 		menu += "11. Show clients sorted by telephone\n";
-		menu += "12. Import data\n";
-		menu += "13. Export order\n";
-		menu += "14. Exit\n";
+		menu += "12. Search client\n";
+		menu += "13. Import data\n";
+		menu += "14. Export order\n";
+		menu += "15. Exit\n";
 		menu += "Please enter an option\n";
 		return menu;
 	}
+	/**
+	 * This method closes the Scanner and says goodbye
+	 */
 	private void exitProgram() {
 		lector.close();
 		System.out.println("Good bye!");
 	}
+	/**
+	 * This method read the petition
+	 * @return the petition
+	 */
 	private int readOption() {
 		int op;
 		op = Integer.parseInt(lector.nextLine());
 		return op;
 	}
+	/**
+	 * This method initialize the program
+	 */
 	public void startMenu() {
 		String menu = getMenu();
 		loadData();

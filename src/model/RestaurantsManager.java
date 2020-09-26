@@ -450,7 +450,6 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return position;
 	}
-
 	/**
 	 * This method search the position of a order with given code
 	 * @param orderCode is the code of the order
@@ -471,7 +470,32 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return position;
 	}
-
+	/**
+     * This method search a client by his name and last name executing a binary search
+     * 
+     * @param name is the client name
+     * @param lastName is the client last name
+     * 
+     * @return found true if the client is found, else false
+     */
+	public boolean searchClientName(String name, String lastName) {
+        String fullName = "";
+        fullName = name+" "+lastName;
+        boolean found = false;
+        int start = 0;
+        int end = clients.size()-1;
+        while (start <= end && !found) {
+            int middle = (start + end)/2;
+            if (clients.get(middle).getFullName().equalsIgnoreCase(fullName)) {
+                found = true;
+            } else if(clients.get(middle).getFullName().compareToIgnoreCase(fullName) < 1){
+                end = middle -1;
+            } else {
+                start = middle +1;
+            }
+        }
+        return found;
+    }
 	//	**************************************************************
 
 	//	Update methods of restaurants
