@@ -10,26 +10,22 @@ import model.RestaurantsManager;
 
 
 class ClientTest {
-	
+
 	private RestaurantsManager rm;
-	
-	public void setupScenary1() {
-		rm = new RestaurantsManager();
-		try {
-			rm.addClient("Andrea", "Corrales", "2154531341", 1, "31254867624", "Cali");
-			rm.addClient("Camilo", "Ramirez", "1548225645", 4, "3124865794", "Cali");
-		} catch (IOException e) {
-			System.err.println("Something failed");
-		}	
+
+	public void setupScenary1() throws IOException {
+		rm = new RestaurantsManager();	
+		rm.addClient("Mario", "Casas", "123456789", 3, "987654321", "Cali");
+		rm.addClient("Pedro", "Randonga", "1548225645", 4, "3124865794", "Cali");
 	}
 	@Test
-	public void testClientSortedAdded_1() throws IOException {
+	public void testClientSortedAdded() throws IOException {
 		setupScenary1();
-		assertEquals("Fail test client", "2154531341",rm.clients.get(1).getIdNum());
+		assertEquals("Fail test client", "123456789",rm.clients.get(1).getIdNum());
 	}
 	@Test
-	public void testClientFullName_2() throws IOException {
+	public void testClientFullName() throws IOException {
 		setupScenary1();
-		assertEquals("Fail test client full name", "Camilo Ramirez",rm.clients.get(0).getFullName());
+		assertEquals("Fail test client full name", "Pedro Randonga",rm.clients.get(0).getFullName());
 	}
 }

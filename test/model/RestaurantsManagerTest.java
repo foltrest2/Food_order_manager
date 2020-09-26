@@ -12,23 +12,23 @@ import model.RestaurantsManager;
 class RestaurantsManagerTest {
 
 	private RestaurantsManager rm;
-	
-	public void setupScenary1() {
+
+	public void setupScenary1() throws IOException {
 		rm = new RestaurantsManager();
+		rm.addRestaurant("Posadero de la esquina", "123456789", "Poncho");
 	}
-	
-	public void setupScenary2() {
-		rm = new RestaurantsManager();
-		try {
-			rm.addRestaurant("Las delicias de Juan", "9182340981", "Juan");
-		} catch (IOException e) {
-			System.err.println("Something doesn't works");
-		}
-	}
-	
+
 	@Test
-	void testUpdateRestaurantName() {
-		setupScenary2();
+	void testAddRestaurant() throws IOException {
+		setupScenary1();
+		rm.addRestaurant("Posadero de la esquina", "123456789", "Poncho");
+		assertNotNull("Add method doesn't works", rm.restaurants);
+
+	}
+
+	@Test
+	void testUpdateRestaurantName() throws IOException {
+		setupScenary1();
 		for (int i = 0; i < rm.restaurants.size(); i++) {
 			if (rm.restaurants.get(i).getNit().equals("9182340981")) {
 				rm.updateRestaurantName(rm.restaurants.get(i).getNit(), "Comidas rápidas Juan");
@@ -36,18 +36,5 @@ class RestaurantsManagerTest {
 			}
 		}
 	}
-	
-	@Test
-	void testAddRestaurant() {
-		setupScenary1();
-		try {
-			rm.addRestaurant("Las delicias de Juan", "9182340981", "Juan");
-			assertNotNull("Add method doesn't works", rm.restaurants);
-		} catch (IOException e) {
-			System.err.println("Something doesn't works");
-		}
-	}
-	
-	
 
 }

@@ -11,8 +11,8 @@ class RestaurantTest {
 	
 	public void setupScenary1() throws IOException {
 		rm = new RestaurantsManager();
-		rm.addRestaurant("Las delicias de Gallo", "12345", "Gallo");
-		rm.addRestaurant("Las delicias de Colombia", "12345", "Camilo");
+		rm.addRestaurant("Posadero de la esquina", "123456789", "Poncho");
+		rm.addRestaurant("Manciladopidira", "123456789", "María");
 	}
 	
 	@Test
@@ -23,6 +23,6 @@ class RestaurantTest {
 	@Test
 	public void testSameRestaurantsNit_2() throws IOException {
 		setupScenary1();
-		assertEquals("There's some restaurant duplicate", "Las delicias de Gallo", rm.restaurants.get(0).getName());
+		assertEquals("There's some restaurant duplicate", "Posadero de la esquina", rm.restaurants.get(0).getName());
 	}
 }
