@@ -5,7 +5,7 @@ import model.Product;
 import model.Order;
 
 public class ItemOrder implements Serializable{
-	
+
 	private static final long serialVersionUID = 1;
 	private Product product;
 	private Order order;
@@ -38,5 +38,5 @@ public class ItemOrder implements Serializable{
 	public Order getOrder() {
 		return order;
 	}
-	
+
 }

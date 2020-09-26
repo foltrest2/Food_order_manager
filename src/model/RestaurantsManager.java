@@ -33,6 +33,9 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	public ArrayList<Client> clients;
 	public ArrayList<Order> orders;
 
+	/**
+	 * This is the constructor of restaurant manager
+	 */
 	public RestaurantsManager() {
 		restaurants = new ArrayList<>();
 		products = new ArrayList<>();
@@ -44,12 +47,18 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//**************************************************************//
 
 	//Methods of restaurants
-
+	/**
+	 * This method adds a restaurant to the arrayList of restaurants
+	 * @param name is the name of the restaurant
+	 * @param nit is the nit of the restaurant
+	 * @param manager is the name of the manager 
+	 * @return a message of what occurs 
+	 * @throws IOException when something going wrong
+	 */
 	public String addRestaurant(String name, String nit, String manager) throws IOException {
 		String info = "";
 		Restaurant r = new Restaurant(name, nit, manager);
 		boolean done = false;
-
 		if(restaurants.isEmpty()) {
 			restaurants.add(r);
 			saveData("rest");
@@ -68,7 +77,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method check if the restaurant nit isn't duplicate
+	 * @param nit is restaurant nit
+	 * @return a boolean with the result of the search
+	 */
 	public boolean uniqueRestaurantNit(String nit){
 		boolean unique = true;
 		for(int i=0; i<restaurants.size() && unique; i++){
@@ -80,38 +93,21 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return unique;
 	}
 
-	public String showRestaurants() {
-		String info = "";
-		if (restaurants.isEmpty()) {
-			info = "There no restaurants in list\n";
-		}
-		else {
-			for (int i = 0; i < restaurants.size(); i++) {
-				info += restaurants.get(i).getInfoWithProducts()+"\n";
-			}	
-		}
-		return info;
-	}
-
-	public String addProductToRestaurant(Product p) throws IOException {
-		String info = "";
-		if (!restaurants.isEmpty()) {
-			for (int i = 0; i < restaurants.size(); i++) {
-				if(p.getRestaurantNit().equals(restaurants.get(i).getNit())) {
-					restaurants.get(i).products.add(p);
-					saveData("rest");
-					info += "Product added to the restaurant list";
-				}
-			}
-		}
-		else
-			info += "No restaurants registered yet";
-		return info;
-	}
 	//**************************************************************//
 
 	//Methods of clients
 
+	/**
+	 * This method add a client to the arrayList of clients
+	 * @param name is the name os the client
+	 * @param lastName is the last name of the client
+	 * @param idNum is the ID number of the client
+	 * @param choice is the number between 1 and 4, means the ID type
+	 * @param telephone is the telephone of the client
+	 * @param adress is the address of the client
+	 * @return a message saying what happens
+	 * @throws IOException is something going wrong
+	 */
 	public String addClient(String name, String lastName, String idNum, int choice, String telephone, String adress) throws IOException {
 		String info = "";
 		String idType = "";
@@ -165,7 +161,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}	
 		return p;
 	}
-
+	/**
+	 * This method check if the client ID isn't duplicate
+	 * @param idNum is the client ID number 
+	 * @return a boolean with the result of the search
+	 */
 	public boolean uniqueClientId(String idNum){
 		boolean unique = true;
 		for(int i=0; i<clients.size() && unique; i++){
@@ -176,28 +176,20 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return unique;
 	}
 
-	public String showClients() {
-		String info = "";
-		if (clients.isEmpty()) {
-			info = "There no restaurants in list\n";
-		}
-		else {
-			for (int i = 0; i < clients.size(); i++) {
-				info += clients.get(i).getInfo()+"\n";
-			}	
-		}
-		return info;
-	}
-
-	@SuppressWarnings("unchecked")
-	public ArrayList<Client> reOrganizeClients() {
-		ArrayList<Client> organized = (ArrayList<Client>) clients.clone();
-		return organized;
-	}
 	//**************************************************************//
 
 	//Methods of products
 
+	/**
+	 * This method add a product to the arrayList of products
+	 * @param name is the name of the product
+	 * @param code is the code of the product
+	 * @param description is the description of the product
+	 * @param cost is the cost of the product
+	 * @param restaurantNit is the restaurant nit of the product
+	 * @return a message saying what happens
+	 * @throws IOException if something going wrong
+	 */
 	public String addProduct(String name, String code, String description, double cost, String restaurantNit) throws IOException {
 		String info = "";
 		Product p = new Product(name, code, description, cost, restaurantNit);
@@ -213,7 +205,32 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 		return info;
 	}
-
+	/**
+	 * This method add the current product to it's respective restaurant
+	 * @param p is the product
+	 * @return a message saying what occurs
+	 * @throws IOException if can't save
+	 */
+	public String addProductToRestaurant(Product p) throws IOException {
+		String info = "";
+		if (!restaurants.isEmpty()) {
+			for (int i = 0; i < restaurants.size(); i++) {
+				if(p.getRestaurantNit().equals(restaurants.get(i).getNit())) {
+					restaurants.get(i).products.add(p);
+					saveData("rest");
+					info += "Product added to the restaurant list";
+				}
+			}
+		}
+		else
+			info += "No restaurants registered yet";
+		return info;
+	}
+	/**
+	 * This method check if the product code isn't duplicate
+	 * @param code is product code
+	 * @return a boolean with the result of the search
+	 */
 	public boolean uniqueProductCode(String code){
 		boolean unique = true;
 		for(int i=0; i<products.size() && unique; i++){
@@ -224,22 +241,16 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return unique;
 	}
 
-	public String showProducts() {
-		String info = "";
-		if (products.isEmpty()) {
-			info = "There no products in list\n";
-		}
-		else {
-			for (int i = 0; i < products.size(); i++) {
-				info += products.get(i).getInfo()+"\n";
-			}	
-		}
-		return info;
-	}
 	//**************************************************************//
 
 	//Methods of orders
-
+	/**
+	 * This method add a order to the arrayList of orders
+	 * @param code is the code of the order
+	 * @param clientIdNum is the client ID number
+	 * @param restaurantNit is the restaurant nit
+	 * @return a message saying what happens
+	 */
 	public String addOrder(String code, String clientIdNum, String restaurantNit) {
 		String info = "";
 		Order o = new Order(code, clientIdNum, restaurantNit);
@@ -248,11 +259,19 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			orders.add(o);
 			info += "Added!";
 		}
-			info += "** Order alredy exists ***";
+		info += "** Order alredy exists ***";
 
 		return info;
 	}
-
+	/**
+	 * This method add a imported order to the arrayList of orders
+	 * @param code is the code of the order
+	 * @param date is the date
+	 * @param clientIdNum is the client ID number
+	 * @param status is the status of the order
+	 * @param restaurantNit is the restaurant nit
+	 * @return
+	 */
 	public String addOrder(String code, String date, String clientIdNum, String status, String restaurantNit) {
 		String info = "";
 		Order o = new Order(code, date, clientIdNum, status, restaurantNit);
@@ -266,7 +285,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 
 		return info;
 	}
-
+	/**
+	 * This method check if the order code isn't duplicate
+	 * @param code is order code
+	 * @return a boolean with the result of the search
+	 */
 	public boolean uniqueOrderCode(String code){
 		boolean unique = true;
 		for(int i=0; i<orders.size() && unique; i++){
@@ -332,21 +355,15 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	}
 
 	public void sortOrder() {
-		class SortOrder implements Comparator<ItemOrder>{
+		class SortOrder implements Comparator<Order>{
 			@Override
-			public int compare(ItemOrder o1, ItemOrder o2) {
-				int value1 = 0, value2 = 0, value3 = 0;
-				value1 = o1.getOrder().getRestaurantNit().compareTo(o2.getOrder().getRestaurantNit());
+			public int compare(Order o1, Order o2) {
+				int value1 = 0, value2 = 0;
+				value1 = o1.getRestaurantNit().compareTo(o2.getRestaurantNit());
 				if(value1 == 0) {
-					value2 = o2.getOrder().getClientIdNum().compareTo(o1.getOrder().getClientIdNum());
+					value2 = o2.getClientIdNum().compareTo(o1.getClientIdNum());
 					if(value2 == 0) {
-						value3 = o1.getOrder().getDate().compareTo(o2.getOrder().getDate());
-						if (value3 == 0) {	
-							return o1.getProduct().getCode().compareTo(o2.getProduct().getCode());
-						}
-						else {
-							return value3;
-						}
+						return o1.getDate().compareTo(o2.getDate());
 					}
 					else {
 						return value2;
@@ -355,10 +372,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 				return value1;
 			}
 		}
-		for (int i = 0; i < orders.size(); i++) {
-			Collections.sort(orders.get(i).productsList, new SortOrder());
-		}
-
+		Collections.sort(orders, new SortOrder());
 	}
 	//	*****************************************************************************
 
@@ -756,7 +770,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		br.close();
 	}
-	
+
 	public int linesWithSomething(String fileName) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		br.readLine();
