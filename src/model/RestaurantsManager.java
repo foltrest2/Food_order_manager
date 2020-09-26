@@ -270,7 +270,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	 * @param clientIdNum is the client ID number
 	 * @param status is the status of the order
 	 * @param restaurantNit is the restaurant nit
-	 * @return
+	 * @return a message saying what happens
 	 */
 	public String addOrder(String code, String date, String clientIdNum, String status, String restaurantNit) {
 		String info = "";
@@ -299,7 +299,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return unique;
 	}
-
+	/**
+	 * This method search the position of a order with given code
+	 * @param code is the code of the order
+	 * @return the position of the order
+	 */
 	public int positionWithOrderCode(String code){
 		int position = 0;
 		for(int i=0; i<orders.size(); i++){
@@ -313,7 +317,9 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	*****************************************************************************
 
 	//	Sorting methods
-
+	/**
+	 * This method sort the arrayList of restaurants by name
+	 */
 	public void sortRestaurantsByName() {
 		Restaurant temp;
 		for (int i = restaurants.size(); i > 0; i--) {
@@ -326,7 +332,10 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			}
 		}
 	}
-
+	/**
+	 * This method sort the arrayList of clients by telephone and return to the original order
+	 * @return the arrayList of clients sorted by telephone
+	 */
 	@SuppressWarnings("unchecked")
 	public String sortClientsByTelephone() {
 		String info = "";
@@ -354,6 +363,10 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return info;
 	}
 
+	/**
+	 * This method sort the arrayList of orders by restaurant nit, if that is sorted, sort by client ID number and if that 
+	 * is sorted, sort by date
+	 */
 	public void sortOrder() {
 		class SortOrder implements Comparator<Order>{
 			@Override
@@ -377,7 +390,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	*****************************************************************************
 
 	//	Searching methods
-
+	/**
+	 * This method search the position of a restaurant with given nit
+	 * @param nit is the nit of the restaurant
+	 * @return the position of the restaurant
+	 * @throws InvalidNitException when the parameter is a no existing nit 
+	 */
 	public int searchRestaurant(String nit) throws InvalidNitException {
 		int position = 0;
 		boolean exists = false;
@@ -392,7 +410,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return position;
 	}
-
+	/**
+	 * This method search the position of a product with given code
+	 * @param code is the code of the product
+	 * @return the position of the product
+	 * @throws InvalidCodeException when the parameter is a no existing code 
+	 */
 	public int searchProduct(String code) throws InvalidCodeException {
 		int position = 0;
 		boolean exists = false;
@@ -407,7 +430,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return position;
 	}
-
+	/**
+	 * This method search the position of a clients with given ID number
+	 * @param idNum is the client ID number
+	 * @return the position of the client
+	 * @throws InvalidIdNumException when the parameter is a no existing ID number 
+	 */
 	public int searchClient(String idNum) throws InvalidIdNumException {
 		int position = 0;
 		boolean exists = false;
@@ -423,6 +451,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		return position;
 	}
 
+	/**
+	 * This method search the position of a order with given code
+	 * @param orderCode is the code of the order
+	 * @return the position of the order
+	 * @throws InvalidCodeException when the parameter is a no existing code
+	 */
 	public int searchOrder(String orderCode) throws InvalidCodeException {
 		int position = 0;
 		boolean exists = false;
@@ -441,7 +475,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	**************************************************************
 
 	//	Update methods of restaurants
-
+	/**
+	 * This method update the restaurant name
+	 * @param nit is the nit of the restaurant
+	 * @param newName is the new name
+	 * @return a message saying what happens
+	 */
 	public String updateRestaurantName(String nit, String newName) {
 		String info = "";
 		for (int i = 0; i < restaurants.size(); i++) {
@@ -452,7 +491,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the restaurant nit in the general list of products, in the list of products each restaurant and in the order
+	 * @param nit is the nit of the restaurant
+	 * @param newNit is the new nit
+	 * @return a message saying what happens
+	 */
 	public String updateRestaurantNit(String nit, String newNit) {
 		String info = "";
 		if(uniqueRestaurantNit(newNit)) {
@@ -473,7 +517,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			info += "The nit alredy exist\n";
 		return info;
 	}
-
+	/**
+	 * This method update the restaurant manager
+	 * @param nit is the nit of the restaurant
+	 * @param newManager is the new manager
+	 * @return a message saying what happens
+	 */
 	public String updateRestaurantManager(String nit, String newManager) {
 		String info = "";
 		for (int i = 0; i < restaurants.size(); i++) {
@@ -488,7 +537,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	**************************************************************
 
 	//	Update methods of product
-
+	/**
+	 * This method update the product name
+	 * @param code is the code of the product
+	 * @param newName is the new name
+	 * @return a message saying what happens
+	 */
 	public String updateProductName(String code, String newName) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
@@ -499,7 +553,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product code in each order, restaurant and in the general list of products
+	 * @param code is the code of the product
+	 * @param newCode is the new code
+	 * @return a message saying what happens
+	 */
 	public String updateProductCode(String code, String newCode) {
 		String info = "";
 		if(uniqueProductCode(newCode)) {
@@ -516,7 +575,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			info += "The code already exists";
 		return info;
 	}
-
+	/**
+	 * This method update the product code each order
+	 * @param code is the code of the product
+	 * @param newCode is the new code
+	 * @return a message saying what happens
+	 */
 	public String updateProductCodeOfOrder(String code, String newCode) {
 		String info = "";
 		for (int i = 0; i < orders.size(); i++) {
@@ -529,7 +593,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product code each restaurant
+	 * @param code is the code of the product
+	 * @param newCode is the new code
+	 * @return a message saying what happens
+	 */
 	public String updateProductCodeOfRestaurantProducts(String code, String newCode) {
 		String info = "";
 		for (int i = 0; i < restaurants.size(); i++) {
@@ -542,7 +611,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product description
+	 * @param code is the code of the product
+	 * @param newDescription is the new description
+	 * @return a message saying what happens
+	 */
 	public String updateProductDescription(String code, String newDescription) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
@@ -553,7 +627,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product cost
+	 * @param code is the code of the product
+	 * @param newCost is the new cost
+	 * @return a message saying what happens
+	 */
 	public String updateProductCost(String code, double newCost) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
@@ -564,7 +643,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product nit each restaurant
+	 * @param restaurantNit is the restaurant of the product
+	 * @param newRestaurantNit is the new restaurant nit
+	 * @return a message saying what happens
+	 */
 	public String updateProductRestaurantNit(String restaurantNit, String newRestaurantNit) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
@@ -575,7 +659,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the product quantity
+	 * @param code is the code of the product
+	 * @param newQuantity is the new quantity
+	 * @return a message saying what happens
+	 */
 	public String updateProductQuantityOfOrder(String code, int newQuantity) {
 		String info = "";
 		for (int i = 0; i < orders.size(); i++) {
@@ -592,7 +681,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	**************************************************************
 
 	//	Update methods of client
-
+	/**
+	 * This method update the client name
+	 * @param idNum is the ID number of the client
+	 * @param newName is the new name
+	 * @return a message saying what happens
+	 */
 	public String updateClientName(String idNum, String newName) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
@@ -603,7 +697,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the client last name
+	 * @param idNum is the ID number of the client
+	 * @param newLastName is the new last name
+	 * @return a message saying what happens
+	 */
 	public String updateClientLastName(String idNum, String newLastName) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
@@ -614,7 +713,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the client ID number in each order and in the arrayList of clients
+	 * @param idNum is the ID number of the client
+	 * @param newIdNum is the new ID number
+	 * @return a message saying what happens
+	 */
 	public String updateClientIdNum(String idNum, String newIdNum) {
 		String info = "";
 		if(uniqueClientId(newIdNum)) {
@@ -630,7 +734,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			info += "The ID already exist";
 		return info;
 	}
-
+	/**
+	 * This method update the client ID type
+	 * @param idNum is the ID number of the client
+	 * @param newIdType is the new ID type
+	 * @return a message saying what happens
+	 */
 	public String updateClientIdType(String idNum, String newIdType) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
@@ -641,7 +750,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the client telephone
+	 * @param idNum is the ID number of the client
+	 * @param newTelephone is the new telephone
+	 * @return a message saying what happens
+	 */
 	public String updateClientTelephone(String idNum, String newTelephone) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
@@ -652,7 +766,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the client address
+	 * @param idNum is the ID number of the client
+	 * @param newAddress is the new address
+	 * @return a message saying what happens
+	 */
 	public String updateClientAddress(String idNum, String newAddress) {
 		String info = "";
 		for (int i = 0; i < clients.size(); i++) {
@@ -667,7 +786,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	*********************************************************************
 
 	//	Update methods of order
-
+	/**
+	 * This method update the client ID number of order
+	 * @param clientIdNum is the client ID number of order
+	 * @param newClientIdNum is the new ID number
+	 * @return a message saying what happens
+	 */
 	public String updateOrderClientIdNum(String clientIdNum,String newClientIdNum) {
 		String info = "";
 		for (int i = 0; i < orders.size(); i++) {
@@ -678,7 +802,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		return info;
 	}
-
+	/**
+	 * This method update the restaurant nit
+	 * @param restaurantNit is the restaurant nit
+	 * @param newRestaurantNit is the new restaurant nit
+	 * @return a message saying what happens
+	 */
 	public String updateOrderRestaurantNit(String restaurantNit ,String newRestaurantNit) {
 		String info = "";
 		for (int i = 0; i < orders.size(); i++) {
@@ -693,7 +822,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	*********************************************************************
 
 	//	Import methods
-
+	/**
+	 * This method import the data of the csv files
+	 * @param fileName is the specific file
+	 * @throws IOException When something going wrong
+	 * @throws InvalidRouteException when the route given doesn't exists
+	 */
 	public void importData(String fileName) throws IOException, InvalidRouteException {
 		if(fileName.equals("data/restaurants.csv")) {
 			importRestaurantData("data/restaurants.csv");
@@ -711,7 +845,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			throw new InvalidRouteException();
 		}
 	}
-
+	/**
+	 * This method import the restaurant data
+	 * @param fileName is the route
+	 * @throws IOException when something going wrong
+	 */
 	public void importRestaurantData(String fileName) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		br.readLine();
@@ -723,7 +861,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		br.close();
 	}
-
+	/**
+	 * This method import the product data
+	 * @param fileName is the route
+	 * @throws IOException when something going wrong
+	 */
 	public void importProductData(String fileName) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		br.readLine();
@@ -735,7 +877,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		br.close();
 	}
-
+	/**
+	 * This method import the client data
+	 * @param fileName is the route
+	 * @throws IOException when something going wrong
+	 */
 	public void importClientData(String fileName) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		br.readLine();
@@ -747,7 +893,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		}
 		br.close();
 	}
-
+	/**
+	 * This method import the order data
+	 * @param fileName is the route
+	 * @throws IOException when something going wrong
+	 */
 	public void importOrderData(String fileName) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		br.readLine();
@@ -755,40 +905,22 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 		while(line!=null){
 			String[] parts = line.split(";");
 			addOrder(parts[0],parts[1],parts[2], parts[3],parts[4]);
-			int j = linesWithSomething(fileName);
-			for (int i = 0; i < j; i++) {
-				String [] analize = br.readLine().split(";");
-				if (!parts[0].equals(analize[0])) {
-					orders.get(i).addProducts(parts[5], Integer.parseInt(parts[6]));
-					i = j-1;
-				}
-				else {
-					orders.get(i).addProducts(parts[5], Integer.parseInt(parts[6]));
-				}
+			for (int i = 0; i < orders.size(); i++) {
+				orders.get(i).addProducts(parts[5], Integer.parseInt(parts[6]));
 			}
 			line = br.readLine();
 		}
 		br.close();
 	}
 
-	public int linesWithSomething(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		br.readLine();
-		int j = 0;
-		String line = "";
-		do {
-			line = br.readLine();
-			j++;
-		}
-		while(line!=null);
-		br.close();
-		return j;
-	}
-
 	//	*********************************************************************
 
 	//	Export method
-
+/**
+ * This method export the orders sorted by three criteria
+ * @param separator is the separator
+ * @throws FileNotFoundException when the file doesn't exists
+ */
 	public void exportOrder(String separator) throws FileNotFoundException {
 		sortOrder();
 		PrintWriter pw = new PrintWriter("data/orders.csv");
@@ -797,7 +929,7 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			if (orders.get(i).getProductsList().size()==1) 
 				pw.println(orders.get(i).getCode()+separator+orders.get(i).getDate()+separator+orders.get(i).getClientIdNum()+separator+orders.get(i).getStatus()+separator+orders.get(i).getRestaurantNit()+separator+orders.get(i).getProductsList().get(0).getProduct().getInfoWithQuantityToExport(separator)); 		
 			if(orders.get(i).getProductsList().size()>1) {
-				for (ItemOrder elem : orders.get(i).getProductsList()) {
+				for (ItemOrder elem : orders.get(i).productsList) {
 					pw.println(elem.getOrder().getCode()+separator+elem.getOrder().getDate()+separator+elem.getOrder().getClientIdNum()+separator+elem.getOrder().getStatus()+separator+elem.getOrder().getRestaurantNit()+separator+elem.getProduct().getInfoWithQuantityToExport(separator));
 				} 
 			}
@@ -808,7 +940,11 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 	//	*********************************************************************
 
 	//	Methods of serialization
-
+/**
+ * This method serialize the info of all the arrayLists 
+ * @param type is a way of distributing
+ * @throws IOException when something going wrong
+ */
 	public void saveData(String type) throws IOException{
 		if(type.equalsIgnoreCase("rest")) {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_RESTAURANTS));
@@ -831,7 +967,12 @@ public class RestaurantsManager implements Comparable<Client>, Serializable{
 			oos.close();
 		}
 	}
-
+/**
+ * This method deserialize the info of all the arrayLists
+ * @return a message saying what happens
+ * @throws IOException when something going wrong
+ * @throws ClassNotFoundException when something going wrong
+ */
 	@SuppressWarnings("unchecked")
 	public String loadData() throws IOException, ClassNotFoundException{
 		File r = new File(SAVE_PATH_FILE_RESTAURANTS);
