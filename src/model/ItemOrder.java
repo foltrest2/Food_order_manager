@@ -11,7 +11,7 @@ public class ItemOrder implements Serializable{
 	private Order order;
 
 	/**
-	 * This method create a object of ItemOrder
+	 * This is the constructor of ItemOrder
 	 * @param p Is the product
 	 * @param o Is the order
 	 * 
@@ -23,10 +23,18 @@ public class ItemOrder implements Serializable{
 		order = o;
 	}
 
+	/**
+	 * This method returns the product
+	 * @return the product
+	 */
 	public Product getProduct() {
 		return product;
 	}
 
+	/**
+	 * This method returns the product
+	 * @return the product
+	 */
 	public Order getOrder() {
 		return order;
 	}
